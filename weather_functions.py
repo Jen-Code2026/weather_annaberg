@@ -33,6 +33,8 @@ nichts gleich oder nur max. 2 Werte gleich: Wetter wechselhaft, höchste Nieders
 
 """
 
+#--- Temperature Functions
+
 def temperature_function(times, temps, target_date):
     wf_morning = []
     wf_late_morning = []
@@ -58,7 +60,25 @@ def temperature_function(times, temps, target_date):
 
     return wf_morning, wf_late_morning, wf_noon, wf_afternoon, wf_evening
 
+
+#---- Average values 
+
 def average_values(werte):
     average_raw = sum(werte) / len(werte)
     average = round(average_raw, 1)
     return average
+
+#---- Probability for a thunderstorm
+
+def thunderstorm_hour(times, thunderstorms, target_date):
+    thunderstorms_hour = []
+
+    for time, thunderstorm in zip(times, thunderstorms):
+        if time.startswith("target_date"):
+            hour_raw = time[11:13]
+            hour = hour_raw + ":00"
+
+            if thunderstorm in (95, 96, 99):
+                thunderstorms_hour.append(hour)
+                
+    return thunderstorms_hour

@@ -107,7 +107,7 @@ if not result.ok: #debugging
 data = result.json() #the json file with all the data
 
 
-#TEMPERATURE-PART--------------------------------------------------------------------------
+#TEMPERATURE-PART------------------------------------------------------------
 
 times = data["hourly"]["time"]
 temps = data["hourly"]["temperature_2m"]
@@ -124,9 +124,18 @@ print(f"Temperaturen heute: Morgens: {morning} Grad, vormittags: "
       f"{late_morning} Grad, mittags: {noon} Grad, nachmittags: "
       f"{afternoon} Grad, abends: {evening} Grad")
 
+#THUNDERSTORM PROBABILITY----------------------------------------------------
 
+weather_codes = data["hourly"]["weather_code"]
 
-#TEST-PART--------------------------------------------------------------------------
+thunderstorm_probability = wf.thunderstorm_hour(times, weather_codes, today_api)
+
+if thunderstorm_probability:
+    print(thunderstorm_probability)
+else:
+    print("Heute besteht keine Gewittergefahr.")
+
+#TEST-PART-------------------------------------------------------------------
 
 """
 
