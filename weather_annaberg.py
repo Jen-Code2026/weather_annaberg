@@ -19,7 +19,7 @@ Wenn das läuft:
 
 To do:
 
-1. Funktionierende Funktion schreiben. Dann darauf aufbauen.
+1. Funktionierende Funktionen schreiben. Dann darauf aufbauen.
 
 enthalten sein müssen:
 Temperaturen (min, max, gefühlt)
@@ -39,7 +39,7 @@ Liftbetrieb: vorraussichtlich eingeschränkt
 
 Dh:
 
-1. ich muss 
+1. 
 """
 
 import requests #for the api datas
