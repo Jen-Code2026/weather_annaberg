@@ -2,44 +2,40 @@
 Goal:
 Weather app for Annaberg, Lower Austria, with push notifications and a website
 
-Was muss das Programm können (auf Deutsch, weil das nur meine eigene Übersicht ist und nicht drin bleibt):
+Idea:
+1. Display the current weather
+2. Provide a forecast for today, tomorrow, and the day after tomorrow
+3. For thunderstorms and storms/strong wind gusts, provide the expected time (because of lift operations)
+4. Lift operating hours are from 8 a.m. to 5 p.m., and from 8 a.m. to 4 p.m. in winter. This must be taken into account in the forecasts.
 
-1. Aktuelles Wetter anzeigen
-2. Vorhersage für heute, morgen und übermorgen treffen können
-3. Die Vorhersagen in frühe Morgenstunden, morgens - vormittags, mittags, nachmittags, abends - nachts unterteilen, weil sonst die Aussagen nutzlos sind für den Liftbetrieb
-4. Bei Gewitter und Sturm(böen) die Zeit dazu ausspucken (wegen Liftbetrieb)
-5. Liftbetrieb ist von 8 - 17 Uhr, im Winter von 8 - 16 Uhr. Das muss bei Vorhersagen dazu bedacht werden.
+Once this works:
 
-Wenn das läuft:
+6. Compare 5 different Open-Meteo models and calculate the average
+7. Expand to 2 different providers, calculate the results from their respective models, and then calculate the overall average
 
-6. 5 verschiedene Modelle von Open Meteo vergleichen, Mittelwert ziehen 
-7. auf 2 verschiedene Anbieter erweitern, je verschiedene Modelle berechnen, daraus dann absoluten Mittelwert ziehen
-
----------------------
+---
 
 To do:
 
-1. Funktionierende Funktionen schreiben. Dann darauf aufbauen.
+1. Write working functions. Build on those afterwards.
 
-enthalten sein müssen:
-Temperaturen (min, max, gefühlt)
-Gewitterwahrscheinlichkeit
-Regen/Schneewahrscheinlichkeit
-Wind (Geschwindigkeit, Richtung, Böen)
+Must include:
 
-Das Ergebnis soll sein:
+* Rain/snow probability
+* Wind (speed, direction, gusts)
+* Effects from wind gusts and thunderstorms on the lift operating hours
 
-16.08.2026:
+The result should look like this:
 
-Wetter: überwiegend sonnig
-Regen/Schnee: unwahrscheinlich, am wahrscheinlichsten noch zwischen 15 - 16 Uhr
-Gewitter: wahrscheinlich, zwischen 15 - 16 Uhr
-Wind: überwiegend schwach aus Nordosten, zwischen 15 - 16 Uhr kräfige Böen möglich
-Liftbetrieb: vorraussichtlich eingeschränkt
+16 August 2026:
 
-Dh:
+Weather: mostly sunny
+Rain/snow: unlikely, most likely between 3–4 p.m.
+Thunderstorms: likely between 3–4 p.m.
+Wind: mostly light from the northeast, with strong gusts possible between 3–4 p.m.
+Lift operations: expected to be restricted
 
-1. 
+
 """
 
 import requests #for the api datas

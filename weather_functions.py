@@ -1,35 +1,34 @@
 #functions to import into the main source file
 
 """
-Idee:
+Daytimes:
 
-zeit:
+morning: 0 - 6 uhr
+late morning: 6 - 11 uhr
+noon: 11 - 14 uhr
+afternoon: 14 - 19 uhr
+evening: 19 - 0 uhr
 
-start des tages: 0 - 6 uhr
-vormittags: 6 - 11 uhr
-mittags: 11 - 14 uhr
-nachmittags: 14 - 19 uhr
-abends: 19 - 0 uhr
+* Output weather codes, for example, like this:
 
-wettercodes zb. so ausgeben:
-wenn 1 - 2 gleich und zb regen, und 3 - 5 auch gleich und kein regen: startet regnerisch, gegen mittag hört der regen auf
-wenn 1, 3 und 5 gleich: immer wieder kommt es zu regen 
+* If 1-2 are the same, e.g. rain, and 3-5 are also the same, e.g. no rain: starts rainy, rain stops around midday.
 
-mögliche Kombinationen:
+* If 1, 3, and 5 are the same: rain occurs repeatedly throughout the day.
 
-1 - 5 gleich: ganzer Tag
-1 - 4 gleich: ganzen Tag, gegen Abend ...
-2 - 5 gleich: startet x, dann den Rest des Tages yp
-1 - 3 und 4 - 5 gleich: bis Mittag x, ab Nachmittag y
-1 - 2 gleich 3 - 5 gleich: startet x, ab Mittag y
-1 - 3 + 5 gleich: den ganzen Tag, nachmittags (vormittags, mittags) unterbrochen von (das geht für alle Kombis in der Art: 1 + 3 - 5 gleich, 1 + 2 + 4 + 5 gleich)
-1 - 3 gleich, 4 und 5 jeweils anders: bis zum frühen Nachmittag x, danach wechselhaft
-nichts gleich oder nur max. 2 Werte gleich: Wetter wechselhaft, höchste Niederschlagswahrscheinlichkeit gegen zb. Nachmittag
-3 x dasselbe Wetter, unzusammenhängend: im Tagesverlauf immer wieder x, unterbrochen von y (unterscheiden sich die beiden anderen punkte auch: + gegen Mittag und z am Abend)
-2 - 4 gleich, 1 und 5 unterschiedlich: startet x, dann über den Tag y, zum Abend hin z
-2 - 4 gleich, 1 + 5: startet mit x, über den Tag y, gegen Abend wieder x
-3 - 5 gleich, 1 und 2 verschieden: startet wechselhaft, ab Mittag dann
+Possible combinations:
 
+* 1-5 the same: all day
+* 1-4 the same: all day, then towards the evening ...
+* 2-5 the same: starts with x, then y for the rest of the day
+* 1-3 and 4-5 the same: x until midday, y from the afternoon onwards
+* 1-2 the same and 3-5 the same: starts with x, y from midday onwards
+* 1-3 + 5 the same: x throughout the day, interrupted by y in the afternoon (morning, midday). This also applies to all combinations of this type, e.g. 1 + 3-5 the same, 1 + 2 + 4 + 5 the same.
+* 1-3 the same, while 4 and 5 are each different: x until early afternoon, then changeable weather
+* Nothing is the same, or no more than 2 values are the same: changeable weather, with the highest precipitation probability around e.g. the afternoon
+* The same weather occurs 3 times non-consecutively: x occurs repeatedly throughout the day, interrupted by y. If the other two points also differ: + y around midday and z in the evening
+* 2-4 the same, with 1 and 5 different: starts with x, then y throughout the day, changing to z towards the evening
+* 2-4 the same, with 1 and 5 the same: starts with x, y throughout the day, then x again towards the evening
+* 3-5 the same, with 1 and 2 different: starts changeable, then y from midday onwards
 
 """
 
