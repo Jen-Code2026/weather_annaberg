@@ -70,15 +70,42 @@ def average_values(werte):
 
 #---- Probability for a thunderstorm
 
-def thunderstorm_hour(times, thunderstorms, target_date):
-    thunderstorms_hour = []
+def thunderstorm_forecast(minutely_times, w_codes_minutely, today_api):
+    thunderstorm_periods = []
 
-    for time, thunderstorm in zip(times, thunderstorms):
-        if time.startswith("target_date"):
-            hour_raw = time[11:13]
-            hour = hour_raw + ":00"
+    for minutely_time, code in zip(minutely_times, w_codes_minutely):
+        if minutely_time.startswith(today_api):
+            if code in (95, 96, 99):
+                minutes_raw = minutely_time[11:16]
+                hour, minute = map(int, minutes_raw.split(":")) 
+                total_minutes = (hour * 60) + minute
 
-            if thunderstorm in (95, 96, 99):
-                thunderstorms_hour.append(hour)
-                
-    return thunderstorms_hour
+                thunderstorm_periods.append([minutes_raw, total_minutes])
+    return thunderstorm_periods
+
+def thunderstorm_times(thunderstorm_forecast):
+    if not thunderstorm_forecast:
+        return []
+    
+    start = thunderstorm_forecast[0][0]
+    end = thunderstorm_forecast[0][0]
+    previous_minutes = thunderstorm_forecast[0][1]
+    from_to_periods = []
+
+    for time, total_minute in thunderstorm_forecast[1:]:
+        difference = total_minute - previous_minutes
+
+        if difference > 15:
+            from_to_periods.append([start, end])
+            start = time
+
+        end_minutes = total_minute + 15
+        end_hour = end_minutes // 60
+        end_minute = end_minutes % 60
+        end = f"{end_hour:02d}:{end_minute:02d}"
+        
+        previous_minutes = total_minute
+
+    from_to_periods.append([start, end])
+
+    return from_to_periods

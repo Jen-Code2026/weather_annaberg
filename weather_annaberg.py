@@ -81,6 +81,8 @@ parameter = {
         "wind_gusts_10m",
     ]),
 
+    "minutely_15": "weather_code",
+
     "daily": ",".join([ #forecast for tomorrow
         "temperature_2m_min",
         "temperature_2m_max",
@@ -106,12 +108,14 @@ if not result.ok: #debugging
 
 data = result.json() #the json file with all the data
 
+times = data["hourly"]["time"]
+temps = data["hourly"]["temperature_2m"]
+minutely_times = data["minutely_15"]["time"]
+weather_codes = data["hourly"]["weather_code"]
+w_codes_minutely = data["minutely_15"]["weather_code"]
 
 #TEMPERATURE-PART------------------------------------------------------------
 
-times = data["hourly"]["time"]
-temps = data["hourly"]["temperature_2m"]
-    
 wf_morning, wf_late_morning, wf_noon, wf_afternoon, wf_evening = wf.temperature_function(times, temps, today_api)
 
 morning = wf.average_values(wf_morning)
@@ -126,12 +130,17 @@ print(f"Temperaturen heute: Morgens: {morning} Grad, vormittags: "
 
 #THUNDERSTORM PROBABILITY----------------------------------------------------
 
-weather_codes = data["hourly"]["weather_code"]
+periods_raw = wf.thunderstorm_times(wf.thunderstorm_forecast(minutely_times,
+                                               w_codes_minutely,
+                                               today_api))
 
-thunderstorm_probability = wf.thunderstorm_hour(times, weather_codes, today_api)
+periods_formatted = []
 
-if thunderstorm_probability:
-    print(thunderstorm_probability)
+for start, end in periods_raw:
+    periods_formatted.append(f"von {start} bis {end} Uhr")
+
+if periods_formatted:
+    print("Gewittergefahr "+" und ".join(periods_formatted) + ".")
 else:
     print("Heute besteht keine Gewittergefahr.")
 
