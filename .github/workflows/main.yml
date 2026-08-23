@@ -1,7 +1,11 @@
-name: Wetterprogramm testen
+name: Täglicher Wetterbericht
 
 on:
   workflow_dispatch:
+
+  schedule:
+    - cron: "0 7 * * *"
+      timezone: "Europe/Vienna"
 
 jobs:
   run-weather:
