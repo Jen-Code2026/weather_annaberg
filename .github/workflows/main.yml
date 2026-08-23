@@ -19,14 +19,8 @@ jobs:
       - name: Requests installieren
         run: pip install requests
 
-      - name: Wetterprogramm starten
-        run: python weather_annaberg.py
-
-      - name: Telegram testen
+      - name: Wetterbericht an Telegram senden
         env:
-          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
-        run: |
-          curl --fail -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
-            --data-urlencode "chat_id=${CHANNEL_ID}" \
-            --data-urlencode "text=Testnachricht vom Wetterprogramm"
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+        run: python weather_annaberg.py
