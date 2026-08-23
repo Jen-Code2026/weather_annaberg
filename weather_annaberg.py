@@ -30,9 +30,9 @@ The result should look like this:
 16 August 2026:
 
 Weather: mostly sunny
-Rain/snow: unlikely, most likely between 3–4 p.m.
-Thunderstorms: likely between 3–4 p.m.
-Wind: mostly light from the northeast, with strong gusts possible between 3–4 p.m.
+Rain/snow: unlikely, most likely between 3-4 p.m.
+Thunderstorms: likely between 3-4 p.m.
+Wind: mostly light from the northeast, with strong gusts possible between 3-4 p.m.
 Lift operations: expected to be restricted
 
 
@@ -50,6 +50,8 @@ tomorrow = tomorrow_us.strftime("%d.%m.%Y")
 da_tomorrow_us = today_us + timedelta(days=2)
 day_after_tomorrow = da_tomorrow_us.strftime("%d.%m.%Y")
 today_api = today_us.isoformat()
+tomorrow_api = tomorrow_us.isoformat()
+da_tomorrow_api = da_tomorrow_us.isoformat()
 
 url = "https://api.open-meteo.com/v1/forecast"
 #url2 = "https://dataset.api.hub.geosphere.at/v1/datasets" 
@@ -109,8 +111,16 @@ temps = data["hourly"]["temperature_2m"]
 minutely_times = data["minutely_15"]["time"]
 weather_codes = data["hourly"]["weather_code"]
 w_codes_minutely = data["minutely_15"]["weather_code"]
+temp_min0 = data["daily"]["temperature_2m_min"][0] 
+temp_max0 = data["daily"]["temperature_2m_max"][0] 
+temp_min1 = data["daily"]["temperature_2m_min"][1] 
+temp_max1 = data["daily"]["temperature_2m_max"][1] 
+temp_min2 = data["daily"]["temperature_2m_min"][2] 
+temp_max2 = data["daily"]["temperature_2m_max"][2] 
 
 #TEMPERATURE-PART------------------------------------------------------------
+
+#today
 
 wf_morning, wf_late_morning, wf_noon, wf_afternoon, wf_evening = wf.temperature_function(times, temps, today_api)
 
@@ -120,11 +130,29 @@ noon = wf.average_values(wf_noon)
 afternoon = wf.average_values(wf_afternoon)
 evening = wf.average_values(wf_evening)
 
-print(f"Temperaturen heute: Morgens: {morning} Grad, vormittags: "
-      f"{late_morning} Grad, mittags: {noon} Grad, nachmittags: "
-      f"{afternoon} Grad, abends: {evening} Grad")
+#tomorrow
+
+wf_morning_tom, wf_late_morning_tom, wf_noon_tom, wf_afternoon_tom, wf_evening_tom = wf.temperature_function(times, temps, tomorrow_api)
+
+morning1 = wf.average_values(wf_morning_tom)
+late_morning1 = wf.average_values(wf_late_morning_tom)
+noon1 = wf.average_values(wf_noon_tom)
+afternoon1 = wf.average_values(wf_afternoon_tom)
+evening1 = wf.average_values(wf_evening_tom)
+
+#day after tomorrow
+
+wf_morning_da_tom, wf_late_morning_da_tom, wf_noon_da_tom, wf_afternoon_da_tom, wf_evening_da_tom = wf.temperature_function(times, temps, da_tomorrow_api)
+
+morning2 = wf.average_values(wf_morning_da_tom)
+late_morning2 = wf.average_values(wf_late_morning_da_tom)
+noon2 = wf.average_values(wf_noon_da_tom)
+afternoon2 = wf.average_values(wf_afternoon_da_tom)
+evening2 = wf.average_values(wf_evening_da_tom)
 
 #THUNDERSTORM PROBABILITY----------------------------------------------------
+
+#Today
 
 periods_raw = wf.thunderstorm_times(wf.thunderstorm_forecast(minutely_times,
                                                w_codes_minutely,
@@ -135,10 +163,73 @@ periods_formatted = []
 for start, end in periods_raw:
     periods_formatted.append(f"von {start} bis {end} Uhr")
 
+#Tomorrow
+
+periods_raw1 = wf.thunderstorm_times(wf.thunderstorm_forecast(minutely_times,
+                                               w_codes_minutely,
+                                               tomorrow_api))
+
+periods_formatted1 = []
+
+for start, end in periods_raw1:
+    periods_formatted1.append(f"von {start} bis {end} Uhr")
+
+#Day after tomorrow
+
+periods_raw2 = wf.thunderstorm_times(wf.thunderstorm_forecast(minutely_times,
+                                               w_codes_minutely,
+                                               da_tomorrow_api))
+
+periods_formatted2 = []
+
+for start, end in periods_raw2:
+    periods_formatted2.append(f"von {start} bis {end} Uhr")
+
+#OUTPUT-----------------------------------------------------------------------
+
+print()
+print("Temperaturen heute: ")
+print(f"Es wird zwischen {temp_min0} und {temp_max0} Grad.")
+print(f"Morgens: {morning} Grad, vormittags: "
+      f"{late_morning} Grad, mittags: {noon} Grad, \nnachmittags: "
+      f"{afternoon} Grad, abends: {evening} Grad")
+print()
+print("Gewittergefahr:")
 if periods_formatted:
     print("Gewittergefahr "+" und ".join(periods_formatted) + ".")
 else:
     print("Heute besteht keine Gewittergefahr.")
+
+#tomorrow
+
+print()
+print("Temperaturen morgen: ")
+print(f"Es wird zwischen {temp_min1} und {temp_max1} Grad.")
+print(f"Morgens: {morning1} Grad, vormittags: "
+      f"{late_morning1} Grad, mittags: {noon1} Grad, \nnachmittags: "
+      f"{afternoon1} Grad, abends: {evening1} Grad")
+print()
+print("Gewittergefahr:")
+if periods_formatted1:
+    print("Gewittergefahr "+" und ".join(periods_formatted1) + ".")
+else:
+    print("Morgen besteht keine Gewittergefahr.")
+
+#day after tomorrow
+
+print()
+print("Temperaturen übermorgen: ")
+print(f"Es wird zwischen {temp_min2} und {temp_max2} Grad.")
+print(f"Morgens: {morning2} Grad, vormittags: "
+      f"{late_morning2} Grad, mittags: {noon2} Grad, \nnachmittags: "
+      f"{afternoon2} Grad, abends: {evening2} Grad")
+print()
+print("Gewittergefahr:")
+if periods_formatted2:
+    print("Gewittergefahr "+" und ".join(periods_formatted2) + ".")
+else:
+    print("Übermorgen besteht keine Gewittergefahr.")
+print()
 
 #TEST-PART-------------------------------------------------------------------
 
