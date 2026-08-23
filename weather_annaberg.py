@@ -41,6 +41,7 @@ Lift operations: expected to be restricted
 import requests #for the api datas
 import weather_functions as wf
 from datetime import date, timedelta #we need dates like "Today the 15.08.2026"
+import os
 
 #we need the different dates to make exact forecasts
 today_us = date.today()
@@ -251,7 +252,19 @@ today_message = (
     f"Gewittergefahr: {thunderstorm_message}"
 )
 
-print(today_message)
+bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
+channel_id = os.getenv("TELEGRAM_CHANNEL_ID")
+
+if bot_token and channel_id:
+    telegram_result = requests.post(
+        f"https://api.telegram.org/bot{bot_token}/sendMessage",
+        data={
+            "chat_id": channel_id,
+            "text": today_message
+        }
+    )
+
+    telegram_result.raise_for_status()
 
 #TEST-PART-------------------------------------------------------------------
 
