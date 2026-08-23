@@ -187,6 +187,8 @@ for start, end in periods_raw2:
 
 #OUTPUT-----------------------------------------------------------------------
 
+#local
+
 print()
 print("Temperaturen heute: ")
 print(f"Es wird zwischen {temp_min0} und {temp_max0} Grad.")
@@ -196,9 +198,15 @@ print(f"Morgens: {morning} Grad, vormittags: "
 print()
 print("Gewittergefahr:")
 if periods_formatted:
-    print("Gewittergefahr "+" und ".join(periods_formatted) + ".")
+    thunderstorm_message = (
+        "Gewittergefahr "
+        + " und ".join(periods_formatted)
+        + "."
+    )
 else:
-    print("Heute besteht keine Gewittergefahr.")
+    thunderstorm_message = "Heute besteht keine Gewittergefahr."
+print(thunderstorm_message)
+
 
 #tomorrow
 
@@ -230,6 +238,20 @@ if periods_formatted2:
 else:
     print("Übermorgen besteht keine Gewittergefahr.")
 print()
+
+#TELEGRAM channel message
+
+today_message = (
+    f"Wetter heute, den {today}:\n\n"
+    "Temperaturen: "
+    f"Es wird zwischen {temp_min0} und {temp_max0} Grad.\n\n"
+    f"Morgens: {morning} Grad, vormittags: "
+    f"{late_morning} Grad, mittags: {noon} Grad, \nnachmittags: "
+    f"{afternoon} Grad, abends: {evening} Grad\n\n"
+    f"Gewittergefahr: {thunderstorm_message}"
+)
+
+print(today_message)
 
 #TEST-PART-------------------------------------------------------------------
 
