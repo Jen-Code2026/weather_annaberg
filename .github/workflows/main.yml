@@ -1,0 +1,23 @@
+name: Wetterprogramm testen
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-weather:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository laden
+        uses: actions/checkout@v6
+
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Requests installieren
+        run: pip install requests
+
+      - name: Wetterprogramm starten
+        run: python weather_annaberg.py
