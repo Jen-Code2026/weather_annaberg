@@ -41,6 +41,7 @@ Lift operations: expected to be restricted
 import requests #for the api datas
 import weather_functions as wf
 from datetime import date, timedelta #we need dates like "Today the 15.08.2026"
+import os
 
 #we need the different dates to make exact forecasts
 today_us = date.today()
@@ -187,6 +188,8 @@ for start, end in periods_raw2:
 
 #OUTPUT-----------------------------------------------------------------------
 
+#local
+
 print()
 print("Temperaturen heute: ")
 print(f"Es wird zwischen {temp_min0} und {temp_max0} Grad.")
@@ -196,9 +199,15 @@ print(f"Morgens: {morning} Grad, vormittags: "
 print()
 print("Gewittergefahr:")
 if periods_formatted:
-    print("Gewittergefahr "+" und ".join(periods_formatted) + ".")
+    thunderstorm_message = (
+        "Gewittergefahr "
+        + " und ".join(periods_formatted)
+        + "."
+    )
 else:
-    print("Heute besteht keine Gewittergefahr.")
+    thunderstorm_message = "Heute besteht keine Gewittergefahr."
+print(thunderstorm_message)
+
 
 #tomorrow
 
@@ -230,6 +239,32 @@ if periods_formatted2:
 else:
     print("Übermorgen besteht keine Gewittergefahr.")
 print()
+
+#TELEGRAM channel message
+
+today_message = (
+    f"Wetter heute, den {today}:\n\n"
+    "Temperaturen: "
+    f"Es wird zwischen {temp_min0} und {temp_max0} Grad.\n\n"
+    f"Morgens: {morning} Grad, vormittags: "
+    f"{late_morning} Grad, mittags: {noon} Grad, \nnachmittags: "
+    f"{afternoon} Grad, abends: {evening} Grad\n\n"
+    f"Gewittergefahr: {thunderstorm_message}"
+)
+
+bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
+channel_id = os.getenv("TELEGRAM_CHANNEL_ID")
+
+if bot_token and channel_id:
+    telegram_result = requests.post(
+        f"https://api.telegram.org/bot{bot_token}/sendMessage",
+        data={
+            "chat_id": channel_id,
+            "text": today_message
+        }
+    )
+
+    telegram_result.raise_for_status()
 
 #TEST-PART-------------------------------------------------------------------
 
