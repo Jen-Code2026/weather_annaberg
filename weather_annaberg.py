@@ -186,6 +186,53 @@ periods_formatted2 = []
 for start, end in periods_raw2:
     periods_formatted2.append(f"von {start} bis {end} Uhr")
 
+#RAIN and SNOW---------------------------------------------------------------
+
+"""
+weather codes:
+51, 53, 55 = Nieselregen
+56, 57, 66 = Eisregen
+67 = starker Eisregen
+61, 63, 80, 81 = Regen
+65, 82 = starker Regen
+71, 73, 77, 85, = Schnee
+75, 86 = starker Schneefall
+
+"""
+
+#Today
+
+rain_periods_raw = wf.rainfall_times(wf.rainfall_forecast(minutely_times,
+                                               w_codes_minutely,
+                                               today_api))
+
+rain_periods_formatted = []
+
+for start, end, rainfall_type in rain_periods_raw:
+    rain_periods_formatted.append(f" von {start} bis {end} Uhr")
+
+#Tomorrow
+
+rain_periods_raw1 = wf.rainfall_times(wf.rainfall_forecast(minutely_times,
+                                               w_codes_minutely,
+                                               tomorrow_api))
+
+rain_periods_formatted1 = []
+
+for start, end, rainfall_type in rain_periods_raw1:
+    rain_periods_formatted1.append(f" von {start} bis {end} Uhr")
+
+#Day after tomorrow
+
+rain_periods_raw2 = wf.rainfall_times(wf.rainfall_forecast(minutely_times,
+                                               w_codes_minutely,
+                                               da_tomorrow_api))
+
+rain_periods_formatted2 = []
+
+for start, end, rainfall_type in rain_periods_raw2:
+    rain_periods_formatted2.append(f" von {start} bis {end} Uhr")
+
 #OUTPUT-----------------------------------------------------------------------
 
 #local
@@ -199,14 +246,17 @@ print(f"Morgens: {morning} Grad, vormittags: "
 print()
 print("Gewittergefahr:")
 if periods_formatted:
-    thunderstorm_message = (
-        "Gewittergefahr "
-        + " und ".join(periods_formatted)
-        + "."
-    )
+    thunderstorm_message = ("Gewittergefahr "+ " und ".join(periods_formatted)+ ".")
 else:
     thunderstorm_message = "Heute besteht keine Gewittergefahr."
 print(thunderstorm_message)
+print()
+print("Voraussichtlicher Niederschlag:")
+if rain_periods_formatted:
+    rain_message = (rainfall_type + " und ".join(rain_periods_formatted) + ".")
+else:
+    rain_message = "Kein Niederschlag heute."
+print(rain_message)
 
 
 #tomorrow
@@ -220,9 +270,16 @@ print(f"Morgens: {morning1} Grad, vormittags: "
 print()
 print("Gewittergefahr:")
 if periods_formatted1:
-    print("Gewittergefahr "+" und ".join(periods_formatted1) + ".")
+    print("Gewittergefahr "+" und".join(periods_formatted1) + ".")
 else:
     print("Morgen besteht keine Gewittergefahr.")
+print()
+print("Voraussichtlicher Niederschlag:")
+if rain_periods_formatted1:
+    rain_message = (rainfall_type + " und".join(rain_periods_formatted1) + ".")
+else:
+    rain_message = "Kein Niederschlag morgen."
+print(rain_message)
 
 #day after tomorrow
 
@@ -239,6 +296,12 @@ if periods_formatted2:
 else:
     print("Übermorgen besteht keine Gewittergefahr.")
 print()
+print("Voraussichtlicher Niederschlag:")
+if rain_periods_formatted2:
+    rain_message = (rainfall_type + " und".join(rain_periods_formatted2) + ".")
+else:
+    rain_message = "Kein Niederschlag übermorgen."
+print(rain_message)
 
 #TELEGRAM channel message
 
@@ -250,6 +313,7 @@ today_message = (
     f"{late_morning} Grad, mittags: {noon} Grad, \nnachmittags: "
     f"{afternoon} Grad, abends: {evening} Grad\n\n"
     f"Gewittergefahr: {thunderstorm_message}"
+    f"Niederschlag: {rain_message}"
 )
 
 bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
@@ -265,25 +329,6 @@ if bot_token and channel_id:
     )
 
     telegram_result.raise_for_status()
-
-#TEST-PART-------------------------------------------------------------------
-
-"""
-
-
-times= data["hourly"]["time"]
-wind_speeds = data["hourly"]["wind_speed_10m"]
-tomorrow_api = tomorrow_us.isoformat() #das Datumsformat, mit dem die Datennamen 
-                                       #der einzelnen Stunden anfangen
-
-print(times)
-
-for time, wind_speed in zip(times, wind_speeds):
-    if time.startswith(tomorrow_api):
-        print(time, wind_speed)
-
-"""
-#TEST-PART-ENDE--------------------------------------------------------------------------
 
 #---- Function for wind direction ---------------------------------------------------
 #we want to have a word like southeast as a direction instead of just "225"
