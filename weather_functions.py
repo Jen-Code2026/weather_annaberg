@@ -108,3 +108,63 @@ def thunderstorm_times(thunderstorm_forecast):
     from_to_periods.append([start, end])
 
     return from_to_periods
+
+#RAIN & SNOW
+
+def rainfall_forecast(minutely_times, w_codes_minutely, today_api):
+    rainfall_periods = []
+
+    for minutely_time, code in zip(minutely_times, w_codes_minutely):
+        if minutely_time.startswith(today_api):
+            if code in(51,53,55):
+                rainfall_type = "Nieselregen"
+            elif code in(56,57,66):
+                rainfall_type = "Eisregen"
+            elif code == 67:
+                rainfall_type = "starker Eisregen"
+            elif code in(61, 63, 80, 81):
+                rainfall_type = "Regen"
+            elif code in(65, 82):
+                rainfall_type = "starker Regen"
+            elif code in(71,73,77,85):
+                rainfall_type = "Schneefall"
+            elif code in(75,86):
+                rainfall_type = "starker Schneefall"
+            else:
+                continue
+
+            minutely_raw = minutely_time[11:16]
+            hour, minute = map(int, minutely_raw.split(":"))
+            total_minutes = hour * 60 + minute
+
+            rainfall_periods.append([minutely_raw, total_minutes, rainfall_type])
+    return rainfall_periods
+
+def rainfall_times(rainfall_forecast):
+    if not rainfall_forecast:
+        return []
+
+    start = rainfall_forecast[0][0]
+    end = rainfall_forecast[0][0]
+    previous_minutes = rainfall_forecast[0][1]
+    previous_rainfall_type = rainfall_forecast[0][0]
+    from_to_periods = []
+
+    for time, total_minute, rainfall_type in rainfall_forecast[1:]:
+        difference = total_minute - previous_minutes
+
+    if difference > 15 or rainfall_type != previous_rainfall_type:
+        from_to_periods.append([start, end, previous_rainfall_type])
+        start = time
+        
+        end_minutes = total_minute + 15
+        end_hour = end_minutes // 60
+        end_minute = end_minutes % 60
+        end = f"{end_hour:02d}:{end_minute:02d}"
+                
+        previous_minutes = total_minute
+        previous_rainfall_type = rainfall_type
+        
+        from_to_periods.append([start, end, previous_rainfall_type])
+        
+    return from_to_periods
