@@ -147,15 +147,15 @@ def rainfall_times(rainfall_forecast):
     start = rainfall_forecast[0][0]
     end = rainfall_forecast[0][0]
     previous_minutes = rainfall_forecast[0][1]
-    previous_rainfall_type = rainfall_forecast[0][0]
+    previous_rainfall_type = rainfall_forecast[0][2]
     from_to_periods = []
 
     for time, total_minute, rainfall_type in rainfall_forecast[1:]:
         difference = total_minute - previous_minutes
 
-    if difference > 15 or rainfall_type != previous_rainfall_type:
-        from_to_periods.append([start, end, previous_rainfall_type])
-        start = time
+        if difference > 15 or rainfall_type != previous_rainfall_type:
+            from_to_periods.append([start, end, previous_rainfall_type])
+            start = time
         
         end_minutes = total_minute + 15
         end_hour = end_minutes // 60
@@ -165,6 +165,6 @@ def rainfall_times(rainfall_forecast):
         previous_minutes = total_minute
         previous_rainfall_type = rainfall_type
         
-        from_to_periods.append([start, end, previous_rainfall_type])
+    from_to_periods.append([start, end, previous_rainfall_type])
         
     return from_to_periods

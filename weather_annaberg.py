@@ -296,7 +296,7 @@ if periods_formatted2:
 else:
     print("Übermorgen besteht keine Gewittergefahr.")
 print()
-print("Voraussichtlicher Niederschlag:")
+print("Voraussichtlicher Niederschlag:\n")
 if rain_periods_formatted2:
     rain_message = (rainfall_type + " und".join(rain_periods_formatted2) + ".")
 else:
