@@ -117,19 +117,19 @@ def rainfall_forecast(minutely_times, w_codes_minutely, today_api):
     for minutely_time, code in zip(minutely_times, w_codes_minutely):
         if minutely_time.startswith(today_api):
             if code in(51,53,55):
-                rainfall_type = "Nieselregen"
+                rainfall_type = "Nieselregen, am wahrscheinlichsten"
             elif code in(56,57,66):
-                rainfall_type = "Eisregen"
+                rainfall_type = "Eisregen, am wahrscheinlichsten"
             elif code == 67:
-                rainfall_type = "starker Eisregen"
+                rainfall_type = "starker Eisregen, am wahrscheinlichsten"
             elif code in(61, 63, 80, 81):
-                rainfall_type = "Regen"
+                rainfall_type = "Regen, am wahrscheinlichsten"
             elif code in(65, 82):
-                rainfall_type = "starker Regen"
+                rainfall_type = "starker Regen, am wahrscheinlichsten"
             elif code in(71,73,77,85):
-                rainfall_type = "Schneefall"
+                rainfall_type = "Schneefall, am wahrscheinlichsten"
             elif code in(75,86):
-                rainfall_type = "starker Schneefall"
+                rainfall_type = "starker Schneefall, am wahrscheinlichsten"
             else:
                 continue
 

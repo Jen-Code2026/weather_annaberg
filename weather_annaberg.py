@@ -276,10 +276,10 @@ else:
 print()
 print("Voraussichtlicher Niederschlag:")
 if rain_periods_formatted1:
-    rain_message = (rainfall_type + " und".join(rain_periods_formatted1) + ".")
+    rain_message1 = (rainfall_type + " und".join(rain_periods_formatted1) + ".")
 else:
-    rain_message = "Kein Niederschlag morgen."
-print(rain_message)
+    rain_message1 = "Kein Niederschlag morgen."
+print(rain_message1)
 
 #day after tomorrow
 
@@ -298,10 +298,10 @@ else:
 print()
 print("Voraussichtlicher Niederschlag:\n")
 if rain_periods_formatted2:
-    rain_message = (rainfall_type + " und".join(rain_periods_formatted2) + ".")
+    rain_message2 = (rainfall_type + " und".join(rain_periods_formatted2) + ".")
 else:
-    rain_message = "Kein Niederschlag übermorgen."
-print(rain_message)
+    rain_message2 = "Kein Niederschlag übermorgen."
+print(rain_message2)
 
 #TELEGRAM channel message
 
