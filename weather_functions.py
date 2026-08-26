@@ -67,18 +67,36 @@ def average_values(werte):
     average = round(average_raw, 1)
     return average
 
+#----- Start and end minutes for the time periods in question & breaks
+
+def calculate_total_minutes(minutely_times):
+    total_minutes = []
+    minutes_raw = []
+
+    for minutely_time in minutely_times:
+    
+        minutes_raw_calcu = minutely_time[11:16]
+        minutes_raw.append(minutes_raw_calcu)
+
+        hour, minute = map(int, minutes_raw_calcu.split(":")) 
+        total_minutes_calcu = (hour * 60) + minute
+        total_minutes.append(total_minutes_calcu)
+
+    return total_minutes, minutes_raw
+
+#def calculate_end_minutes(calculate_total_minutes):
+    
+
+
 #---- Probability for a thunderstorm
 
 def thunderstorm_forecast(minutely_times, w_codes_minutely, today_api):
+    total_minutes_list, minutes_raw_list = calculate_total_minutes(minutely_times)
     thunderstorm_periods = []
 
-    for minutely_time, code in zip(minutely_times, w_codes_minutely):
+    for minutely_time, code, total_minutes, minutes_raw in zip(minutely_times, w_codes_minutely, total_minutes_list, minutes_raw_list):
         if minutely_time.startswith(today_api):
             if code in (95, 96, 99):
-                minutes_raw = minutely_time[11:16]
-                hour, minute = map(int, minutes_raw.split(":")) 
-                total_minutes = (hour * 60) + minute
-
                 thunderstorm_periods.append([minutes_raw, total_minutes])
     return thunderstorm_periods
 
@@ -90,6 +108,7 @@ def thunderstorm_times(thunderstorm_forecast):
     end = thunderstorm_forecast[0][0]
     previous_minutes = thunderstorm_forecast[0][1]
     from_to_periods = []
+    end_minutes = previous_minutes + 15
 
     for time, total_minute in thunderstorm_forecast[1:]:
         difference = total_minute - previous_minutes
@@ -112,32 +131,29 @@ def thunderstorm_times(thunderstorm_forecast):
 #RAIN & SNOW
 
 def rainfall_forecast(minutely_times, w_codes_minutely, today_api):
+    total_minutes_list, minutes_raw_list = calculate_total_minutes(minutely_times)
     rainfall_periods = []
 
-    for minutely_time, code in zip(minutely_times, w_codes_minutely):
+    for minutely_time, code, total_minutes, minutes_raw in zip(minutely_times, w_codes_minutely, total_minutes_list, minutes_raw_list):
         if minutely_time.startswith(today_api):
             if code in(51,53,55):
-                rainfall_type = "Nieselregen"
+                rainfall_type = "Nieselregen, am wahrscheinlichsten"
             elif code in(56,57,66):
-                rainfall_type = "Eisregen"
+                rainfall_type = "Eisregen, am wahrscheinlichsten"
             elif code == 67:
-                rainfall_type = "starker Eisregen"
+                rainfall_type = "starker Eisregen, am wahrscheinlichsten"
             elif code in(61, 63, 80, 81):
-                rainfall_type = "Regen"
+                rainfall_type = "Regen, am wahrscheinlichsten"
             elif code in(65, 82):
-                rainfall_type = "starker Regen"
+                rainfall_type = "starker Regen, am wahrscheinlichsten"
             elif code in(71,73,77,85):
-                rainfall_type = "Schneefall"
+                rainfall_type = "Schneefall, am wahrscheinlichsten"
             elif code in(75,86):
-                rainfall_type = "starker Schneefall"
+                rainfall_type = "starker Schneefall, am wahrscheinlichsten"
             else:
                 continue
 
-            minutely_raw = minutely_time[11:16]
-            hour, minute = map(int, minutely_raw.split(":"))
-            total_minutes = hour * 60 + minute
-
-            rainfall_periods.append([minutely_raw, total_minutes, rainfall_type])
+            rainfall_periods.append([minutes_raw, total_minutes, rainfall_type])
     return rainfall_periods
 
 def rainfall_times(rainfall_forecast):
