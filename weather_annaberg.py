@@ -312,7 +312,7 @@ today_message = (
     f"Morgens: {morning} Grad, vormittags: "
     f"{late_morning} Grad, mittags: {noon} Grad, \nnachmittags: "
     f"{afternoon} Grad, abends: {evening} Grad\n\n"
-    f"Gewittergefahr: {thunderstorm_message}"
+    f"Gewittergefahr: {thunderstorm_message}\n"
     f"Niederschlag: {rain_message}"
 )
 
