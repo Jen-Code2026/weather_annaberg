@@ -13,28 +13,11 @@ Once this works:
 6. Compare 5 different Open-Meteo models and calculate the average
 7. Expand to 2 different providers, calculate the results from their respective models, and then calculate the overall average
 
----
-
-To do:
-
-1. Write working functions. Build on those afterwards.
-
-Must include:
-
-* Rain/snow probability
-* Wind (speed, direction, gusts)
-* Effects from wind gusts and thunderstorms on the lift operating hours
-
-The result should look like this:
-
-16 August 2026:
-
-Weather: mostly sunny
-Rain/snow: unlikely, most likely between 3-4 p.m.
-Thunderstorms: likely between 3-4 p.m.
-Wind: mostly light from the northeast, with strong gusts possible between 3-4 p.m.
-Lift operations: expected to be restricted
-
+Longtime goal:
+8. collect regional data 
+9. compare that to the forecasts
+10. calculate which models are for which values the most reliable
+11. give them a part of the cake according to their reliability
 
 """
 
