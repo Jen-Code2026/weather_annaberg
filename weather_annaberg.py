@@ -41,8 +41,10 @@ url = "https://api.open-meteo.com/v1/forecast"
 #url2 = "https://dataset.api.hub.geosphere.at/v1/datasets" 
 
 parameter = {
-    "latitude": 47.8717277,
-    "longitude": 15.3760583,
+    #"latitude": 47.8717277, #Annaberg
+    #"longitude": 15.3760583, #Annaberg
+    "latitude": 47.870300, #Lassingrotte Annaberg
+    "longitude": 15.330000, #Lassingrotte Annaberg
     "current": ",".join([  #data for today
         "temperature_2m",
         "apparent_temperature",
