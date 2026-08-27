@@ -184,3 +184,55 @@ def rainfall_times(rainfall_forecast):
     from_to_periods.append([start, end, previous_rainfall_type])
         
     return from_to_periods
+
+#WIND------------------------------------------------------------------------
+
+def direction_function(direction):
+    direction = float(direction)
+    if direction >= 337.5 or direction < 22.5:
+        return "Norden"
+    elif direction < 67.5:
+        return "Nordosten"
+    elif direction < 112.5:
+        return "Osten"
+    elif direction < 157.5:
+        return "Südosten"
+    elif direction < 202.5:
+        return "Süden"
+    elif direction < 247.5:
+        return "Südwesten"
+    elif direction < 292.5:
+        return "Westen"
+    elif direction < 337.5:
+        return "Nordwesten"
+
+#---- Function for wind speed -------------------------------------------------------
+
+def speed_function(speed):
+    if speed < 1:
+        return "Windstill."
+    elif speed < 6:
+        return f"Ein leiser Zug mit {speed} km/h aus"
+    elif speed < 12:
+        return f"Eine leichte Brise mit {speed} km/h aus"
+    elif speed < 20:
+        return f"Ein schwacher Wind mit {speed} km/h aus"
+    elif speed < 29:
+        return f"Ein mäßiger Wind mit {speed} km/h aus"
+    elif speed < 39:
+        return f"Ein frischer Wind mit {speed} km/h aus"
+    elif speed < 50:
+        return f"Ein starker Wind mit {speed} km/h aus"
+    elif speed < 62:
+        return f"Ein steifer Wind mit {speed} km/h aus"
+    elif speed < 75:
+        return f"Ein stürmischer Wind mit {speed} km/h aus"
+    elif speed < 89:
+        return f"Sturm mit {speed} km/h aus"
+    elif speed < 103:
+        return f"Schwerer Sturm mit {speed} km/h aus"
+    elif speed < 118:
+        return f"Ein orkanartiger Sturm mit {speed} km/h aus"
+    else:
+        return f"Ein Orkan mit {speed} km/h aus"
+

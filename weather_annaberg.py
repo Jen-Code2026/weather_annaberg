@@ -118,6 +118,18 @@ temp_min1 = data["daily"]["temperature_2m_min"][1]
 temp_max1 = data["daily"]["temperature_2m_max"][1] 
 temp_min2 = data["daily"]["temperature_2m_min"][2] 
 temp_max2 = data["daily"]["temperature_2m_max"][2] 
+today_direction = data["daily"]["wind_direction_10m_dominant"][0]
+tomorrow_direction = data["daily"]["wind_direction_10m_dominant"][1]
+dat_direction = data["daily"]["wind_direction_10m_dominant"][2]
+today_winddirection = wf.direction_function(today_direction)
+tomorrow_winddirection = wf.direction_function(tomorrow_direction)
+da_tomorrow_winddirection = wf.direction_function(dat_direction)
+speed_today = data["daily"]["wind_speed_10m_max"][0]
+speed_tomorrow = data["daily"]["wind_speed_10m_max"][1]
+speed_da_tomorrow = data["daily"]["wind_speed_10m_max"][2]
+wind_speed_today = wf.speed_function(speed_today)
+wind_speed_tomorrow = wf.speed_function(speed_tomorrow)
+wind_speed_da_tomorrow = wf.speed_function(speed_da_tomorrow)
 
 #TEMPERATURE-PART------------------------------------------------------------
 
@@ -188,18 +200,6 @@ for start, end in periods_raw2:
 
 #RAIN and SNOW---------------------------------------------------------------
 
-"""
-weather codes:
-51, 53, 55 = Nieselregen
-56, 57, 66 = Eisregen
-67 = starker Eisregen
-61, 63, 80, 81 = Regen
-65, 82 = starker Regen
-71, 73, 77, 85, = Schnee
-75, 86 = starker Schneefall
-
-"""
-
 #Today
 
 rain_periods_raw = wf.rainfall_times(wf.rainfall_forecast(minutely_times,
@@ -233,6 +233,7 @@ rain_periods_formatted2 = []
 for start, end, rainfall_type in rain_periods_raw2:
     rain_periods_formatted2.append(f" von {start} bis {end} Uhr")
 
+
 #OUTPUT-----------------------------------------------------------------------
 
 #local
@@ -257,7 +258,8 @@ if rain_periods_formatted:
 else:
     rain_message = "Kein Niederschlag heute."
 print(rain_message)
-
+print()
+print(f"Wind:\n{wind_speed_today} {today_winddirection}")
 
 #tomorrow
 
@@ -280,6 +282,8 @@ if rain_periods_formatted1:
 else:
     rain_message1 = "Kein Niederschlag morgen."
 print(rain_message1)
+print()
+print(f"Wind:\n{wind_speed_tomorrow} {tomorrow_winddirection}")
 
 #day after tomorrow
 
@@ -302,6 +306,8 @@ if rain_periods_formatted2:
 else:
     rain_message2 = "Kein Niederschlag übermorgen."
 print(rain_message2)
+print()
+print(f"Wind:\n{wind_speed_da_tomorrow} {da_tomorrow_winddirection}")
 
 #TELEGRAM channel message
 
@@ -313,7 +319,8 @@ today_message = (
     f"{late_morning} Grad, mittags: {noon} Grad, \nnachmittags: "
     f"{afternoon} Grad, abends: {evening} Grad\n\n"
     f"Gewittergefahr: {thunderstorm_message}\n"
-    f"Niederschlag: {rain_message}"
+    f"Niederschlag: {rain_message}\n"
+    f"Wind:\n{wind_speed_today} {today_winddirection}"
 )
 
 bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
@@ -329,86 +336,3 @@ if bot_token and channel_id:
     )
 
     telegram_result.raise_for_status()
-
-#---- Function for wind direction ---------------------------------------------------
-#we want to have a word like southeast as a direction instead of just "225"
-
-"""def direction_function(direction):
-    if direction >= 337.5 or direction < 22.5:
-        return "Norden"
-    elif direction < 67.5:
-        return "Nordosten"
-    elif direction < 112.5:
-        return "Osten"
-    elif direction < 157.5:
-        return "Südosten"
-    elif direction < 202.5:
-        return "Süden"
-    elif direction < 247.5:
-        return "Südwesten"
-    elif direction < 292.5:
-        return "Westen"
-    elif direction < 337.5:
-        return "Nordwesten"
-
-current_direction = data["current"]["wind_direction_10m"]
-today_direction = data["daily"]["wind_direction_10m_dominant"][0]
-tomorrow_direction = data["daily"]["wind_direction_10m_dominant"][1]
-dat_direction = data["daily"]["wind_direction_10m_dominant"][2]
-
-current_winddirection = direction_function(current_direction)
-today_winddirection = direction_function(today_direction)
-tomorrow_winddirection = direction_function(tomorrow_direction)
-dat_winddirection = direction_function(dat_direction)
-
-#---- Function for wind speed -------------------------------------------------------
-
-def speed_function(speed):
-    if speed < 1:
-        return "kein Wind."
-    elif speed < 6:
-        return f"ein leiser Zug mit {speed} km/h aus"
-    elif speed < 12:
-        return f"eine leichte Brise mit {speed} km/h aus"
-    elif speed < 20:
-        return f"ein schwacher Wind mit {speed} km/h aus"
-    elif speed < 29:
-        return f"ein mäßiger Wind mit {speed} km/h aus"
-    elif speed < 39:
-        return f"ein frischer Wind mit {speed} km/h aus"
-    elif speed < 50:
-        return f"ein starker Wind mit {speed} km/h aus"
-    elif speed < 62:
-        return f"ein steifer Wind mit {speed} km/h aus"
-    elif speed < 75:
-        return f"ein stürmischer Wind mit {speed} km/h aus"
-    elif speed < 89:
-        return f"Sturm mit {speed} km/h aus"
-    elif speed < 103:
-        return f"schwerer Sturm mit {speed} km/h aus"
-    elif speed < 118:
-        return f"ein orkanartiger Sturm mit {speed} km/h aus"
-    else:
-        return f"ein Orkan mit {speed} km/h aus"
-
-current_speed = data["current"]["wind_speed_10m"]
-current_windspeed = speed_function(current_speed)
-
-
-#---- THE FORECAST -----------------------------------------------------------------
-print("Aktuelles Wetter:")
-print(f"Gerade weht {current_windspeed} {current_winddirection}.")
-print("")
-print(f"Wetter heute am {today}:")
-
-print("")
-print(f"Wetter morgen am {tomorrow}:")
-
-print("")
-print(f"Voraussichtliches Wetter übermorgen am {day_after_tomorrow}:")
-
-print("")
-
-
-
-"""
