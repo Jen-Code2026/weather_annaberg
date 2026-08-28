@@ -23,11 +23,12 @@ Longtime goal:
 
 import requests #for the api datas
 import weather_functions as wf
-from datetime import date, timedelta #we need dates like "Today the 15.08.2026"
+from datetime import datetime, timedelta #we need dates like "Today the 15.08.2026"
+from zoneinfo import ZoneInfo
 import os
 
 #we need the different dates to make exact forecasts
-today_us = date.today()
+today_us = datetime.now(ZoneInfo("Europe/Vienna")).date()
 today = today_us.strftime("%d.%m.%Y")
 tomorrow_us = today_us + timedelta(days=1)
 tomorrow = tomorrow_us.strftime("%d.%m.%Y")
