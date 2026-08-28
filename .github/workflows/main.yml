@@ -21,7 +21,7 @@ jobs:
           python-version: "3.x"
 
       - name: Requests installieren
-        run: pip install requests
+        run: pip install requests tzdata
 
       - name: Wetterbericht an Telegram senden
         env:
