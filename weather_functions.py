@@ -32,6 +32,8 @@ Possible combinations:
 
 """
 
+from statistics import median
+
 #--- Temperature Functions
 
 def temperature_function(times, temps, target_date):
@@ -84,18 +86,22 @@ def calculate_total_minutes(minutely_times):
 
     return total_minutes, minutes_raw
 
-#def calculate_end_minutes(calculate_total_minutes):
-    
+def calculate_end_minutes(total_minute):
+    end_minutes = total_minute + 15
+    end_hour = end_minutes // 60
+    end_minute = end_minutes % 60
+    end = f"{end_hour:02d}:{end_minute:02d}"
+    return end
 
 
 #---- Probability for a thunderstorm
 
-def thunderstorm_forecast(minutely_times, w_codes_minutely, today_api):
+def thunderstorm_forecast(minutely_times, w_codes_minutely, target_date):
     total_minutes_list, minutes_raw_list = calculate_total_minutes(minutely_times)
     thunderstorm_periods = []
 
     for minutely_time, code, total_minutes, minutes_raw in zip(minutely_times, w_codes_minutely, total_minutes_list, minutes_raw_list):
-        if minutely_time.startswith(today_api):
+        if minutely_time.startswith(target_date):
             if code in (95, 96, 99):
                 thunderstorm_periods.append([minutes_raw, total_minutes])
     return thunderstorm_periods
@@ -108,7 +114,6 @@ def thunderstorm_times(thunderstorm_forecast):
     end = thunderstorm_forecast[0][0]
     previous_minutes = thunderstorm_forecast[0][1]
     from_to_periods = []
-    end_minutes = previous_minutes + 15
 
     for time, total_minute in thunderstorm_forecast[1:]:
         difference = total_minute - previous_minutes
@@ -117,11 +122,7 @@ def thunderstorm_times(thunderstorm_forecast):
             from_to_periods.append([start, end])
             start = time
 
-        end_minutes = total_minute + 15
-        end_hour = end_minutes // 60
-        end_minute = end_minutes % 60
-        end = f"{end_hour:02d}:{end_minute:02d}"
-        
+        end = calculate_end_minutes(total_minute)
         previous_minutes = total_minute
 
     from_to_periods.append([start, end])
@@ -130,12 +131,12 @@ def thunderstorm_times(thunderstorm_forecast):
 
 #RAIN & SNOW
 
-def rainfall_forecast(minutely_times, w_codes_minutely, today_api):
+def rainfall_forecast(minutely_times, w_codes_minutely, target_date):
     total_minutes_list, minutes_raw_list = calculate_total_minutes(minutely_times)
     rainfall_periods = []
 
     for minutely_time, code, total_minutes, minutes_raw in zip(minutely_times, w_codes_minutely, total_minutes_list, minutes_raw_list):
-        if minutely_time.startswith(today_api):
+        if minutely_time.startswith(target_date):
             if code in(51,53,55):
                 rainfall_type = "Nieselregen, am wahrscheinlichsten"
             elif code in(56,57,66):
@@ -172,12 +173,8 @@ def rainfall_times(rainfall_forecast):
         if difference > 15 or rainfall_type != previous_rainfall_type:
             from_to_periods.append([start, end, previous_rainfall_type])
             start = time
-        
-        end_minutes = total_minute + 15
-        end_hour = end_minutes // 60
-        end_minute = end_minutes % 60
-        end = f"{end_hour:02d}:{end_minute:02d}"
-                
+
+        end = calculate_end_minutes(total_minute)
         previous_minutes = total_minute
         previous_rainfall_type = rainfall_type
         
@@ -210,7 +207,7 @@ def direction_function(direction):
 
 def speed_function(speed):
     if speed < 1:
-        return "Windstill."
+        return "0"
     elif speed < 6:
         return f"Ein leiser Zug mit {speed} km/h aus"
     elif speed < 12:
@@ -236,3 +233,47 @@ def speed_function(speed):
     else:
         return f"Ein Orkan mit {speed} km/h aus"
 
+#---- Function for wind gusts -----------------------------------------------
+
+def wind_gusts_function(minutely_times, gusts, target_date):
+    total_minutes_list, minutes_raw_list = calculate_total_minutes(minutely_times)
+    gusts_target_date = []
+    wind_gusts_periods = []
+
+    for minutely_time, gust, in zip(minutely_times, gusts):
+        if minutely_time.startswith(target_date):
+            gusts_target_date.append(gust)
+
+    if not gusts_target_date:
+        return []
+
+    gusts_median = median(gusts_target_date)
+
+    for minutely_time, gust, total_minutes, minutes_raw in zip(minutely_times, gusts, total_minutes_list,minutes_raw_list):
+        if minutely_time.startswith(target_date):
+            if gust > gusts_median:
+                wind_gusts_periods.append([minutes_raw, total_minutes])
+    return wind_gusts_periods
+
+def wind_gusts_times(gusts_forecast):
+    if not gusts_forecast:
+        return []
+    
+    start = gusts_forecast[0][0]
+    end = gusts_forecast[0][0]
+    previous_minutes = gusts_forecast[0][1]
+    from_to_periods = []
+
+    for time, total_minute in gusts_forecast[1:]:
+        difference = total_minute - previous_minutes
+
+        if difference > 15:
+            from_to_periods.append([start, end])
+            start = time
+
+        end = calculate_end_minutes(total_minute)
+        previous_minutes = total_minute
+
+    from_to_periods.append([start, end])
+
+    return from_to_periods

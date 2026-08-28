@@ -65,7 +65,10 @@ parameter = {
         "wind_gusts_10m",
     ]),
 
-    "minutely_15": "weather_code",
+    "minutely_15": ",".join([ 
+        "weather_code",
+        "wind_gusts_10m",
+        ]),
 
     "daily": ",".join([ #forecast for tomorrow
         "temperature_2m_min",
@@ -115,6 +118,10 @@ speed_da_tomorrow = data["daily"]["wind_speed_10m_max"][2]
 wind_speed_today = wf.speed_function(speed_today)
 wind_speed_tomorrow = wf.speed_function(speed_tomorrow)
 wind_speed_da_tomorrow = wf.speed_function(speed_da_tomorrow)
+gusts = data["minutely_15"]["wind_gusts_10m"]
+gusts_max_today = data["daily"]["wind_gusts_10m_max"][0]
+gusts_max_tomorrow = data["daily"]["wind_gusts_10m_max"][1]
+gusts_max_da_tomorrow = data["daily"]["wind_gusts_10m_max"][2]
 
 #TEMPERATURE-PART------------------------------------------------------------
 
@@ -218,81 +225,118 @@ rain_periods_formatted2 = []
 for start, end, rainfall_type in rain_periods_raw2:
     rain_periods_formatted2.append(f" von {start} bis {end} Uhr")
 
+#WIND GUSTS -----------------------------------------------------------------
+
+#Today
+
+gusts_periods_raw = wf.wind_gusts_times(wf.wind_gusts_function(minutely_times,
+                                               gusts,
+                                               today_api))
+
+gusts_periods_formatted = []
+
+for start, end in gusts_periods_raw:
+    gusts_periods_formatted.append(f" von {start} bis {end} Uhr")
+
+#Tomorrow
+
+gusts_periods_raw1 = wf.wind_gusts_times(wf.wind_gusts_function(minutely_times,
+                                               gusts,
+                                               tomorrow_api))
+
+gusts_periods_formatted1 = []
+
+for start, end in gusts_periods_raw1:
+    gusts_periods_formatted1.append(f" von {start} bis {end} Uhr")
+
+#Day after Tomorrow
+
+gusts_periods_raw2 = wf.wind_gusts_times(wf.wind_gusts_function(minutely_times,
+                                               gusts,
+                                               da_tomorrow_api))
+
+gusts_periods_formatted2 = []
+
+for start, end in gusts_periods_raw2:
+    gusts_periods_formatted2.append(f" von {start} bis {end} Uhr")
 
 #OUTPUT-----------------------------------------------------------------------
 
-#local
+#not as a function, for readability
 
-print()
-print("Temperaturen heute: ")
+print("\nTemperaturen heute: ")
 print(f"Es wird zwischen {temp_min0} und {temp_max0} Grad.")
 print(f"Morgens: {morning} Grad, vormittags: "
       f"{late_morning} Grad, mittags: {noon} Grad, \nnachmittags: "
       f"{afternoon} Grad, abends: {evening} Grad")
-print()
-print("Gewittergefahr:")
+print("\nGewittergefahr:")
 if periods_formatted:
-    thunderstorm_message = ("Gewittergefahr "+ " und ".join(periods_formatted)+ ".")
+    thunderstorm_message = ("Gewittergefahr "+ " und".join(periods_formatted)+ ".")
 else:
     thunderstorm_message = "Heute besteht keine Gewittergefahr."
 print(thunderstorm_message)
-print()
-print("Voraussichtlicher Niederschlag:")
+print("\nVoraussichtlicher Niederschlag:")
 if rain_periods_formatted:
-    rain_message = (rainfall_type + " und ".join(rain_periods_formatted) + ".")
+    rain_message = (rainfall_type + " und".join(rain_periods_formatted) + ".")
 else:
     rain_message = "Kein Niederschlag heute."
 print(rain_message)
-print()
-print(f"Wind:\n{wind_speed_today} {today_winddirection}")
+if wind_speed_today == "0":
+    print("\nWind:\nEs ist windstill.")
+else:
+    print(f"\nWind:\n{wind_speed_today} {today_winddirection}.\n"
+          f"Windböen bis zu {gusts_max_today} km/h, am stärksten" + 
+          " und".join(gusts_periods_formatted) + ".")
 
 #tomorrow
 
-print()
-print("Temperaturen morgen: ")
+print("\nTemperaturen morgen: ")
 print(f"Es wird zwischen {temp_min1} und {temp_max1} Grad.")
 print(f"Morgens: {morning1} Grad, vormittags: "
       f"{late_morning1} Grad, mittags: {noon1} Grad, \nnachmittags: "
       f"{afternoon1} Grad, abends: {evening1} Grad")
-print()
-print("Gewittergefahr:")
+print("\nGewittergefahr:")
 if periods_formatted1:
     print("Gewittergefahr "+" und".join(periods_formatted1) + ".")
 else:
     print("Morgen besteht keine Gewittergefahr.")
-print()
-print("Voraussichtlicher Niederschlag:")
+print("\nVoraussichtlicher Niederschlag:")
 if rain_periods_formatted1:
     rain_message1 = (rainfall_type + " und".join(rain_periods_formatted1) + ".")
 else:
     rain_message1 = "Kein Niederschlag morgen."
 print(rain_message1)
-print()
-print(f"Wind:\n{wind_speed_tomorrow} {tomorrow_winddirection}")
+if wind_speed_tomorrow == "0":
+    print("\nWind:\nEs ist windstill.")
+else:
+    print(f"\nWind:\n{wind_speed_tomorrow} {tomorrow_winddirection}.\n"
+          f"Windböen bis zu {gusts_max_tomorrow} km/h, am stärksten" + 
+            " und".join(gusts_periods_formatted1) + ".")
 
 #day after tomorrow
 
-print()
-print("Temperaturen übermorgen: ")
+print("\nTemperaturen übermorgen: ")
 print(f"Es wird zwischen {temp_min2} und {temp_max2} Grad.")
 print(f"Morgens: {morning2} Grad, vormittags: "
       f"{late_morning2} Grad, mittags: {noon2} Grad, \nnachmittags: "
       f"{afternoon2} Grad, abends: {evening2} Grad")
-print()
-print("Gewittergefahr:")
+print("\nGewittergefahr:")
 if periods_formatted2:
-    print("Gewittergefahr "+" und ".join(periods_formatted2) + ".")
+    print("Gewittergefahr "+" und".join(periods_formatted2) + ".")
 else:
     print("Übermorgen besteht keine Gewittergefahr.")
-print()
-print("Voraussichtlicher Niederschlag:\n")
+print("\nVoraussichtlicher Niederschlag:")
 if rain_periods_formatted2:
     rain_message2 = (rainfall_type + " und".join(rain_periods_formatted2) + ".")
 else:
     rain_message2 = "Kein Niederschlag übermorgen."
 print(rain_message2)
-print()
-print(f"Wind:\n{wind_speed_da_tomorrow} {da_tomorrow_winddirection}")
+if wind_speed_da_tomorrow == "0":
+    print("\nWind:\nEs ist windstill.")
+else:
+    print(f"\nWind:\n{wind_speed_da_tomorrow} {da_tomorrow_winddirection}.\n"
+          f"Windböen bis zu {gusts_max_da_tomorrow} km/h, am stärksten" + 
+           " und".join(gusts_periods_formatted2) + ".")
 
 #TELEGRAM channel message
 
@@ -305,8 +349,9 @@ today_message = (
     f"{afternoon} Grad, abends: {evening} Grad\n\n"
     f"Gewittergefahr: {thunderstorm_message}\n"
     f"Niederschlag: {rain_message}\n"
-    f"Wind:\n{wind_speed_today} {today_winddirection}"
-)
+    f"Wind:{wind_speed_today} {today_winddirection}"
+    f"Windböen bis zu {gusts_max_da_tomorrow} km/h, am stärksten" + 
+     " und".join(gusts_periods_formatted2) + ".")
 
 bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
 channel_id = os.getenv("TELEGRAM_CHANNEL_ID")
