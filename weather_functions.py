@@ -111,8 +111,8 @@ def thunderstorm_times(thunderstorm_forecast):
         return []
     
     start = thunderstorm_forecast[0][0]
-    end = thunderstorm_forecast[0][0]
     previous_minutes = thunderstorm_forecast[0][1]
+    end = calculate_end_minutes(previous_minutes)
     from_to_periods = []
 
     for time, total_minute in thunderstorm_forecast[1:]:
@@ -162,8 +162,8 @@ def rainfall_times(rainfall_forecast):
         return []
 
     start = rainfall_forecast[0][0]
-    end = rainfall_forecast[0][0]
     previous_minutes = rainfall_forecast[0][1]
+    end = calculate_end_minutes(previous_minutes)
     previous_rainfall_type = rainfall_forecast[0][2]
     from_to_periods = []
 
@@ -260,8 +260,8 @@ def wind_gusts_times(gusts_forecast):
         return []
     
     start = gusts_forecast[0][0]
-    end = gusts_forecast[0][0]
     previous_minutes = gusts_forecast[0][1]
+    end = calculate_end_minutes(previous_minutes)
     from_to_periods = []
 
     for time, total_minute in gusts_forecast[1:]:
