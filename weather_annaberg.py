@@ -348,9 +348,9 @@ today_message = (
     f"Morgens: {morning} Grad, vormittags: "
     f"{late_morning} Grad, mittags: {noon} Grad, \nnachmittags: "
     f"{afternoon} Grad, abends: {evening} Grad\n\n"
-    f"Gewittergefahr: {thunderstorm_message}\n"
-    f"Niederschlag: {rain_message}\n"
-    f"Wind:{wind_speed_today} {today_winddirection}"
+    f"Gewittergefahr: {thunderstorm_message}\n\n"
+    f"Niederschlag: {rain_message}\n\n"
+    f"Wind: {wind_speed_today} {today_winddirection}\n"
     f"Windböen bis zu {gusts_max_da_tomorrow} km/h, am stärksten" + 
      " und".join(gusts_periods_formatted2) + ".")
 
